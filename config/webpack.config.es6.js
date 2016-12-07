@@ -3,7 +3,7 @@ const glob = require('glob');
 const webpack = require('webpack');
 
 function getPath(e) {
-  return `${__dirname}/../lib/${e.inDir}/${e.name}.js`
+  return `${__dirname}/../main/${e.inDir}/${e.name}.js`
 }
 
 // Tests as per jasmine_*.json.
