@@ -7,12 +7,12 @@
   },
   "scripts": {
     "build": "webpack --config ./config/webpack.dev.config.es6.js",
-    "coverage": "JASMINE_CONFIG_PATH=./jasmine_coverage.json istanbul cover --dir .coverage -- jasmine",
+    "coverage": "JASMINE_CONFIG_PATH=./config/jasmine_coverage.json istanbul cover --dir .coverage -- jasmine",
     "develop": "webpack --watch --progress --config ./config/webpack.dev.config.es6.js",
-    "integration": "JASMINE_CONFIG_PATH=./jasmine_integration.json jasmine",
+    "integration": "JASMINE_CONFIG_PATH=./config/jasmine_integration.json jasmine",
     "lint": "webpack --config ./config/webpack.strict.config.es6.js",
-    "test": "JASMINE_CONFIG_PATH=./jasmine_all.json jasmine",
-    "unit": "JASMINE_CONFIG_PATH=./jasmine_unit.json jasmine"
+    "test": "JASMINE_CONFIG_PATH=./config/jasmine_all.json jasmine",
+    "unit": "JASMINE_CONFIG_PATH=./config/jasmine_unit.json jasmine"
   },
   "keywords": [
     "javascript",
