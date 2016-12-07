@@ -1,0 +1,26 @@
+{
+  "parser": "babel-eslint",
+  "extends": "google",
+  "env": {
+    "browser": true,
+    "node": true
+  },
+  "rules": {
+    "new-cap": ["error", { "capIsNewExceptions": ["CLASS"] }],
+    "comma-dangle": ["error", {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "never"
+    }],
+    "no-unused-vars": ["error", {
+      "vars": "all",
+      "args": "after-used",
+      "argsIgnorePattern": "^(var_args|opt_[a-z][a-zA-Z]*)$"
+    }]
+  },
+  "globals": {
+    "foam": false
+  }
+}
