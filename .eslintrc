@@ -17,7 +17,7 @@
         "exports": "always-multiline",
         "functions": "never"
     }],
-    "new-cap": ["error", { "capIsNewExceptions": ["CLASS", "SUPER"] }],
+    "new-cap": ["error", {"capIsNewExceptions": ["CLASS", "SUPER"]}],
     "no-invalid-this": off,
     "no-unused-vars": ["error", {
       "vars": "all",
