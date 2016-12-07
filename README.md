@@ -13,5 +13,5 @@ are checking for. And you get to clean up the mess.
 
 So, what's better than continuous integration? Tools that notify you *the
 moment you do something wrong*. And what's even better than that?  Tools that
-can explain to you *what you did wrong and to avoid it in the
+can explain to you *what you did wrong and how to avoid it in the
 future*. **That's SMW**.
