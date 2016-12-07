@@ -100,4 +100,153 @@ describe('Hook', () => {
     expect(impl.p).toBe(0); // From value before ++.
     expect(value).toBe(1);
   });
+
+  dualIt('Get and set', createHook => {
+    let gets = 0;
+    let sets = 0;
+    const impl = {p: 0};
+    const hook = createHook({
+      impl,
+      name: 'p',
+      get: value => {
+        gets++;
+        return value;
+      },
+      set: (old, nu) => {
+        sets++;
+        return nu;
+      },
+    });
+    expect(impl.p).toBe(0); // Non-intrusive wrapped get.
+    expect(impl.p = -1).toBe(-1); // Non-intrusive wrapped set.
+    expect(impl.p).toBe(-1); // Non-intrusive wrapped get (again).
+    expect(gets).toBe(2);
+    expect(sets).toBe(1);
+  });
+
+  dualIt('Get and apply', createHook => {
+    let gets = 0;
+    let applies = 0;
+    const f = x => x * x;
+    const impl = {f};
+    const hook = createHook({
+      impl,
+      name: 'f',
+      get: value => {
+        gets++;
+        return value;
+      },
+      apply: (f, self, ...args) => {
+        applies++;
+        return f.apply(self, args);
+      },
+    });
+    impl.f; // Non-intrusive get; invoke wrapping means value will be different.
+    expect(impl.f(2)).toBe(f(2)); // Non-intrusive wrapped get-then-apply.
+    expect(gets).toBe(2);
+    expect(applies).toBe(1);
+  });
+
+  dualIt('Set and apply', createHook => {
+    let sets = 0;
+    let applies = 0;
+    const f = x => x * x;
+    const f2 = x => x + x;
+    const impl = {f};
+    const hook = createHook({
+      impl,
+      name: 'f',
+      set: (old, nu) => {
+        sets++;
+        return nu;
+      },
+      apply: (f, self, ...args) => {
+        applies++;
+        return f.apply(self, args);
+      },
+    });
+    expect(impl.f(2)).toBe(f(2)); // Non-intrusive wrapped apply.
+    impl.f = f2; // Non-intrusive wrapped set.
+    expect(impl.f(3)).toBe(f2(3)); // Non-intrusive wrapped apply.
+    expect(sets).toBe(1);
+    expect(applies).toBe(2);
+  });
+
+  dualIt('Get, set, and apply', createHook => {
+    let gets = 0;
+    let sets = 0;
+    let applies = 0;
+    const f = x => x * x;
+    const f2 = x => x + x;
+    const impl = {f};
+    const hook = createHook({
+      impl,
+      name: 'f',
+      get: value => {
+        gets++;
+        return value;
+      },
+      set: (old, nu) => {
+        sets++;
+        return nu;
+      },
+      apply: (f, self, ...args) => {
+        applies++;
+        return f.apply(self, args);
+      },
+    });
+    expect(impl.f(2)).toBe(f(2)); // Non-intrusive wrapped get-then-apply.
+    impl.f; // Non-intrusive wrapped get.
+    impl.f = f2;  // Non-intrusive wrapped set.
+    expect(impl.f(3)).toBe(f2(3)); // Non-intrusive wrapped get-then-apply.
+    expect(gets).toBe(3);
+    expect(sets).toBe(1);
+    expect(applies).toBe(2);
+  });
+
+  dualIt('Custom getter', createHook => {
+    let value = 0;
+    const impl = {
+      get p() {
+        return null;
+      },
+    };
+    const hook = createHook({
+      impl,
+      name: 'p',
+      get: () => value++,
+    });
+    const p = impl.p;
+    expect(p).toBe(0); // From value before ++.
+    expect(value).toBe(1);
+  });
+
+  dualIt('Custom setter', createHook => {
+    let value = 0;
+    let pValue = null;
+    const impl = {
+      set p(nu) {
+        pValue = nu;
+      },
+    };
+    const hook = createHook({
+      impl,
+      name: 'p',
+      set: () => value++,
+    });
+    impl.p = -1; // Overridden by setter.
+    expect(pValue).toBe(null); // Setter overwritten by hook.
+    expect(impl.p).toBe(0); // From value before ++.
+    expect(value).toBe(1);
+  });
+
+  dualIt('No property', createHook => {
+    let value = 0;
+    const impl = {};
+    expect(() => createHook({
+      impl,
+      name: 'p',
+      get: () => value++,
+    })).toThrowError(/property/i);
+  });
 });
