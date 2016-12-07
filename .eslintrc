@@ -1,12 +1,15 @@
 {
-  "parser": "babel-eslint",
-  "extends": "google",
   "env": {
     "browser": true,
     "node": true
   },
+  "extends": "google",
+  "globals": {
+    "foam": false
+  },
+  "parser": "babel-eslint",
   "rules": {
-    "new-cap": ["error", { "capIsNewExceptions": ["CLASS"] }],
+    "arrow-parens": ["error", "as-needed"],
     "comma-dangle": ["error", {
         "arrays": "always-multiline",
         "objects": "always-multiline",
@@ -14,13 +17,12 @@
         "exports": "always-multiline",
         "functions": "never"
     }],
+    "new-cap": ["error", { "capIsNewExceptions": ["CLASS", "SUPER"] }],
+    "no-invalid-this": off,
     "no-unused-vars": ["error", {
       "vars": "all",
       "args": "after-used",
       "argsIgnorePattern": "^(var_args|opt_[a-z][a-zA-Z]*)$"
     }]
-  },
-  "globals": {
-    "foam": false
   }
 }
