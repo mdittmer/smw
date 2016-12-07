@@ -1,0 +1,11 @@
+{
+  "env": {
+    "jasmine": true
+  },
+  "globals": {
+    "describe": false
+  },
+  "rules": {
+    "no-unused-vars": "warn"
+  }
+}
