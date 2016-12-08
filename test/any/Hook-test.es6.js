@@ -16,11 +16,11 @@
  */
 'use strict';
 
-let createHook;
-let createHookNoProxy;
+let installHook;
+let installHookNoProxy;
 let dualIt = (desc, f) => {
-  it(`${desc} (proxy)`, () => f(createHook));
-  it(`${desc} (no proxy)`, () => f(createHookNoProxy));
+  it(`${desc} (proxy)`, () => f(installHook));
+  it(`${desc} (no proxy)`, () => f(installHookNoProxy));
 };
 
 beforeAll(() => {
@@ -28,32 +28,39 @@ beforeAll(() => {
   const Hook = foam.lookup('tools.web.strict.Hook');
   const ProxyX = foam.createSubContext({Proxy});
   const NoProxyX = foam.createSubContext({Proxy: null});
-  createHook = opts => Hook.create(opts, ProxyX);
-  createHookNoProxy = opts => Hook.create(opts, NoProxyX);
+  const doInstallHook = (opts, X) => {
+    const impl = opts.impl;
+    delete opts.impl;
+    const hook = Hook.create(opts, X);
+    hook.install(impl);
+    return hook;
+  };
+  installHook = opts => doInstallHook(opts, ProxyX);
+  installHookNoProxy = opts => doInstallHook(opts, NoProxyX);
 
   dualIt = (desc, f) => {
-    it(`${desc} (proxy)`, () => f(createHook));
-    it(`${desc} (no proxy)`, () => f(createHookNoProxy));
+    it(`${desc} (proxy)`, () => f(installHook));
+    it(`${desc} (no proxy)`, () => f(installHookNoProxy));
   };
 });
 
 describe('Hook', () => {
-  dualIt('Provide class', createHook => {
+  dualIt('Provide class', installHook => {
     expect(foam.lookup('tools.web.strict.Hook')).toBeDefined();
   });
 
-  dualIt('Invocation passes through', createHook => {
+  dualIt('Invocation passes through', installHook => {
     let value = 0;
     const impl = {f: () => value++};
-    const hook = createHook({impl, name: 'f'});
+    const hook = installHook({impl, name: 'f'});
     impl.f();
     expect(value).toBe(1);
   });
 
-  dualIt('Invocation wraps', createHook => {
+  dualIt('Invocation wraps', installHook => {
     let value = 0;
     const impl = {f: () => true};
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'f',
       apply: () => value++,
@@ -62,16 +69,16 @@ describe('Hook', () => {
     expect(value).toBe(1);
   });
 
-  dualIt('Get passes through', createHook => {
+  dualIt('Get passes through', installHook => {
     const impl = {p: 0};
-    const hook = createHook({impl, name: 'p'});
+    const hook = installHook({impl, name: 'p'});
     expect(impl.p).toBe(0);
   });
 
-  dualIt('Get wraps', createHook => {
+  dualIt('Get wraps', installHook => {
     let value = 0;
     const impl = {p: 0};
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'p',
       get: () => value++,
@@ -81,17 +88,17 @@ describe('Hook', () => {
     expect(value).toBe(1);
   });
 
-  dualIt('Set passes through', createHook => {
+  dualIt('Set passes through', installHook => {
     const impl = {p: 0};
-    const hook = createHook({impl, name: 'p'});
+    const hook = installHook({impl, name: 'p'});
     impl.p = 1;
     expect(impl.p).toBe(1);
   });
 
-  dualIt('Set wraps', createHook => {
+  dualIt('Set wraps', installHook => {
     let value = 0;
     const impl = {p: 0};
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'p',
       set: () => value++,
@@ -101,11 +108,11 @@ describe('Hook', () => {
     expect(value).toBe(1);
   });
 
-  dualIt('Get and set', createHook => {
+  dualIt('Get and set', installHook => {
     let gets = 0;
     let sets = 0;
     const impl = {p: 0};
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'p',
       get: value => {
@@ -124,12 +131,12 @@ describe('Hook', () => {
     expect(sets).toBe(1);
   });
 
-  dualIt('Get and apply', createHook => {
+  dualIt('Get and apply', installHook => {
     let gets = 0;
     let applies = 0;
     const f = x => x * x;
     const impl = {f};
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'f',
       get: value => {
@@ -147,13 +154,13 @@ describe('Hook', () => {
     expect(applies).toBe(1);
   });
 
-  dualIt('Set and apply', createHook => {
+  dualIt('Set and apply', installHook => {
     let sets = 0;
     let applies = 0;
     const f = x => x * x;
     const f2 = x => x + x;
     const impl = {f};
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'f',
       set: (old, nu) => {
@@ -172,14 +179,14 @@ describe('Hook', () => {
     expect(applies).toBe(2);
   });
 
-  dualIt('Get, set, and apply', createHook => {
+  dualIt('Get, set, and apply', installHook => {
     let gets = 0;
     let sets = 0;
     let applies = 0;
     const f = x => x * x;
     const f2 = x => x + x;
     const impl = {f};
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'f',
       get: value => {
@@ -204,14 +211,14 @@ describe('Hook', () => {
     expect(applies).toBe(2);
   });
 
-  dualIt('Custom getter', createHook => {
+  dualIt('Custom getter', installHook => {
     let value = 0;
     const impl = {
       get p() {
         return null;
       },
     };
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'p',
       get: () => value++,
@@ -221,7 +228,7 @@ describe('Hook', () => {
     expect(value).toBe(1);
   });
 
-  dualIt('Custom setter', createHook => {
+  dualIt('Custom setter', installHook => {
     let value = 0;
     let pValue = null;
     const impl = {
@@ -229,7 +236,7 @@ describe('Hook', () => {
         pValue = nu;
       },
     };
-    const hook = createHook({
+    const hook = installHook({
       impl,
       name: 'p',
       set: () => value++,
@@ -240,13 +247,41 @@ describe('Hook', () => {
     expect(value).toBe(1);
   });
 
-  dualIt('No property', createHook => {
+  dualIt('No property', installHook => {
     let value = 0;
     const impl = {};
-    expect(() => createHook({
+    expect(() => installHook({
       impl,
       name: 'p',
       get: () => value++,
     })).toThrowError(/property/i);
+  });
+
+  dualIt('Uninstall', installHook => {
+    let gets = 0;
+    let sets = 0;
+    let pValue = 0;
+    const impl = {
+      get p() {
+        return pValue;
+      },
+      set p(nu) {
+        pValue = nu;
+      },
+    };
+    const hook = installHook({
+      impl,
+      name: 'p',
+      get: value => gets++,
+      set: (old, nu) => sets++,
+    });
+    expect(impl.p).toBe(0); // Before gets increment.
+    impl.p = 1;
+    expect(gets).toBe(1);
+    expect(sets).toBe(1);
+    expect(pValue).toBe(0);
+    hook.uninstall();
+    impl.p = -1;
+    expect(impl.p).toBe(-1);
   });
 });
