@@ -16,12 +16,11 @@
  */
 'use strict';
 
-let data = {
-  syncXHR: {class: 'tools.web.strict.SyncXHRTrigger'},
-};
+// TODO(markdittmer): We need a better solution for running code in NodeJS.
 
-foam.Object.forEach(data, (value, key) => {
-  value.id = key;
+beforeAll(() => {
+  global.XMLHttpRequest = function() {};
+  global.XMLHttpRequest.prototype = {
+    open: function() {},
+  };
 });
-
-module.exports = data;

@@ -16,12 +16,15 @@
  */
 'use strict';
 
-let data = {
-  syncXHR: {class: 'tools.web.strict.SyncXHRTrigger'},
-};
-
-foam.Object.forEach(data, (value, key) => {
-  value.id = key;
+let triggers;
+beforeAll(() => {
+  triggers = require('../../lib/triggers/triggers.es6.js');
 });
 
-module.exports = data;
+describe('triggers', () => {
+  it('Class', () => {
+    foam.Object.forEach(triggers, value => {
+      expect(typeof value.class).toBe('string');
+    });
+  });
+});
