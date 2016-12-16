@@ -47,7 +47,7 @@ beforeAll(() => {
 });
 
 describe('SyncXHR', () => {
-  function withCallbackController(callback, f) {
+  const withCallbackController = function(callback, f) {
     const controller = Controller.create({
       hooks: {
         'XMLHttpRequest.open.apply': {
@@ -73,7 +73,7 @@ describe('SyncXHR', () => {
     controller.install();
     f(controller);
     controller.uninstall();
-  }
+  };
 
   it('Synchronous notification of sync xhr', () => {
     let calls = 0;

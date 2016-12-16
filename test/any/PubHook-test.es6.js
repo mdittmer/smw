@@ -25,7 +25,7 @@ beforeAll(() => {
   const PubHook = foam.lookup('tools.web.strict.PubHook');
 
   let count = 0;
-  const doInstallPubHook = (opts) => {
+  const doInstallPubHook = opts => {
     opts.id = opts.id || `anonymousPubHook${count++}`;
     const hook = PubHook.create(opts, X);
     hook.install();
