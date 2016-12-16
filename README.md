@@ -16,6 +16,23 @@ moment you do something wrong*. And what's even better than that?  Tools that
 can explain to you *what you did wrong and how to avoid it in the
 future*. **That's SMW**.
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [SMW: Strict Mode for the Web / Show Me Why](#smw-strict-mode-for-the-web--show-me-why)
+  - [Contributing](#contributing)
+    - [Coding style](#coding-style)
+    - [Building, deploying, and testing (oh my!)](#building-deploying-and-testing-oh-my)
+    - [File names and directory structure](#file-names-and-directory-structure)
+  - [Underlying technologies](#underlying-technologies)
+    - [Working with FOAM](#working-with-foam)
+      - [FOAM and module loading](#foam-and-module-loading)
+      - [FOAM Resources](#foam-resources)
+        - [FOAM2](#foam2)
+        - [FOAM1 and FOAM2](#foam1-and-foam2)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ## Contributing
 
