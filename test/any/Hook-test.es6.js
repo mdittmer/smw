@@ -24,17 +24,19 @@ let dualIt = (desc, f) => {
 };
 
 beforeAll(() => {
-  require('../../lib/Hook.es6.js');
+  require('../../lib/hooks/Hook.es6.js');
   const Hook = foam.lookup('tools.web.strict.Hook');
   const ProxyX = foam.createSubContext({Proxy});
   const NoProxyX = foam.createSubContext({Proxy: null});
+
+  let count = 0;
   const doInstallHook = (opts, X) => {
-    const impl = opts.impl;
-    delete opts.impl;
+    opts.id = opts.id || `anonymousHook${count++}`;
     const hook = Hook.create(opts, X);
-    hook.install(impl);
+    hook.install();
     return hook;
   };
+
   installHook = opts => doInstallHook(opts, ProxyX);
   installHookNoProxy = opts => doInstallHook(opts, NoProxyX);
 
