@@ -86,4 +86,28 @@ describe('SyncXHR', () => {
       }
     );
   });
+
+  it('No notification of explicit async xhr', () => {
+    let calls = 0;
+    withCallbackController(
+      () => calls++,
+      () => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://www.example.org/example.txt', true);
+        expect(calls).toBe(0);
+      }
+    );
+  });
+
+  it('No notification of implicit async xhr', () => {
+    let calls = 0;
+    withCallbackController(
+      () => calls++,
+      () => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://www.example.org/example.txt');
+        expect(calls).toBe(0);
+      }
+    );
+  });
 });
