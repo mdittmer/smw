@@ -1,0 +1,39 @@
+{
+  "name": "SMW: Strict Mode for the Web / Show Me Why",
+  "version": "0.0.1",
+
+  "description": "Catch your mistakes before they get entrenched in your code",
+
+  "manifest_version": 2,
+  "minimum_chrome_version": "49.0",
+
+  "web_accessible_resources": [
+    "bundle/foam-bin.bundle.js",
+    "bundle/vendors.bundle.js",
+    "bundle/extension_content_script.es6.bundle.js"
+  ],
+
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": [
+        "http://localhost/*",
+        "https://localhost/*",
+        "http://127.0.0.1/*",
+        "https://127.0.0.1/*"
+      ],
+      "js": [
+        "extension_content_script.js"
+      ]
+    }
+  ],
+
+  "background": {
+    "scripts": [
+      "bundle/foam-bin.bundle.js",
+      "bundle/vendors.bundle.js",
+      "bundle/extension_background.es6.bundle.js"
+    ]
+  },
+  "devtools_page": "devtools_page.html"
+}

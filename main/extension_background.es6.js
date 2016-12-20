@@ -16,6 +16,4 @@
  */
 'use strict';
 
-// Export global SMW configuration function.
-(typeof window !== 'undefined' ? window : global).SMW =
-  require('../lib/SMW.es6.js');
+// TODO(markdittmer): Write background page.

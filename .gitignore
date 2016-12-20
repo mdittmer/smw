@@ -4,3 +4,4 @@
 .coverage/*
 .user/*
 static/bundle
+extension/bundle
