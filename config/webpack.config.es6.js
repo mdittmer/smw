@@ -33,7 +33,7 @@ const tests = {
 };
 
 const entries = [
-  {inDir: '.', name: 'main', getPath},
+  {inDir: '.', name: 'SMW.es6', getPath},
   // {name: 'node_unit', getPath: () => tests.unit.node},
   {name: 'browser_unit', getPath: () => tests.unit.browser},
   // {name: 'node_integration', getPath: () => tests.integration.node},
