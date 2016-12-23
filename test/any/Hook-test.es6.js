@@ -244,9 +244,9 @@ describe('Hook', () => {
       set: () => value++,
     });
     impl.p = -1; // Overridden by setter.
-    expect(pValue).toBe(null); // Setter overwritten by hook.
-    expect(impl.p).toBe(0); // From value before ++.
-    expect(value).toBe(1);
+    expect(pValue).toBe(0); // Initial "value++" passed to "pValue = nu" setter.
+    expect(impl.p).toBe(undefined); // p (still) has no getter.
+    expect(value).toBe(1); // "value++" invoked exactly once.
   });
 
   dualIt('No property', installHook => {
