@@ -39,7 +39,7 @@ beforeAll(() => {
     ],
 
     listeners: [
-      function onAdvice(...args) {
+      function onAdvice(sub, topic, ...args) {
         return this.callback(...args);
       },
     ],
@@ -50,23 +50,31 @@ describe('SyncXHR', () => {
   const withCallbackController = function(callback, f) {
     const controller = Controller.create({
       hooks: {
-        'XMLHttpRequest.open.apply': {
-          class: 'tools.web.strict.PubHook',
-          impl: XMLHttpRequest.prototype,
-          name: 'open',
-          apply: true,
+        map: {
+          'XMLHttpRequest.prototype.open.apply': {
+            class: 'tools.web.strict.PubHook',
+            id: 'XMLHttpRequest.prototype.open.apply',
+            implProvider: 'XMLHttpRequest.prototype',
+            name: 'open',
+            apply: true,
+          },
         },
       },
       triggers: {
-        syncXHR: {class: 'tools.web.strict.SyncXHRTrigger'},
+        map: {
+          syncXHR: {class: 'tools.web.strict.SyncXHRTrigger'},
+        },
       },
       advisors: {
-        test: {
-          class: 'tools.web.strict.test.CallbackAdvisor',
-          callback,
+        map: {
+          test: {
+            class: 'tools.web.strict.test.CallbackAdvisor',
+            callback,
+          },
         },
       },
       config: {
+        triggers: ['syncXHR'],
         advisors: ['test'],
       },
     });
