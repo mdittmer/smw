@@ -16,38 +16,38 @@
  */
 'use strict';
 
-let Controller;
-beforeAll(() => {
-  require('../../lib/Controller.es6.js');
-  require('../../lib/advisors/Advisor.es6.js');
-  require('../../lib/triggers/LayoutStyleRecalcTrigger.es6.js');
-
-  Controller = foam.lookup('tools.web.strict.Controller');
-
-  foam.CLASS({
-    package: 'tools.web.strict.test',
-    // TODO(markdittmer): Put one CallbackAdvisor in a helper.
-    name: 'CallbackAdvisor2',
-    extends: 'tools.web.strict.Advisor',
-
-    properties: [
-      {
-        name: 'callback',
-        value: function() {
-          throw new Error('CallbackAdvisor2 with no callback');
-        },
-      },
-    ],
-
-    listeners: [
-      function onAdvice(sub, topic, ...args) {
-        return this.callback(...args);
-      },
-    ],
-  });
-});
-
 describe('LayoutStyleRecalc', () => {
+  let Controller;
+  beforeAll(() => {
+    require('../../lib/Controller.es6.js');
+    require('../../lib/advisors/Advisor.es6.js');
+    require('../../lib/triggers/LayoutStyleRecalcTrigger.es6.js');
+
+    Controller = foam.lookup('tools.web.strict.Controller');
+
+    foam.CLASS({
+      package: 'tools.web.strict.test',
+      // TODO(markdittmer): Put one CallbackAdvisor in a helper.
+      name: 'CallbackAdvisor2',
+      extends: 'tools.web.strict.Advisor',
+
+      properties: [
+        {
+          name: 'callback',
+          value: function() {
+            throw new Error('CallbackAdvisor2 with no callback');
+          },
+        },
+      ],
+
+      listeners: [
+        function onAdvice(sub, topic, ...args) {
+          return this.callback(...args);
+        },
+      ],
+    });
+  });
+
   const withCallbackController = function(callback, f) {
     const controller = Controller.create({
       triggers: {

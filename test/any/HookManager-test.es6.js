@@ -16,24 +16,24 @@
  */
 'use strict';
 
-let installHook;
-beforeAll(() => {
-  require('../../lib/hooks/Hook.es6.js');
-  const Hook = foam.lookup('tools.web.strict.Hook');
-  const ProxyX = foam.createSubContext({Proxy});
-
-  let count = 0;
-  const doInstallHook = (opts, X) => {
-    opts.id = opts.id || `anonymousHook${count++}`;
-    const hook = Hook.create(opts, X);
-    hook.install();
-    return hook;
-  };
-
-  installHook = opts => doInstallHook(opts, ProxyX);
-});
-
 describe('HookManager', () => {
+  let installHook;
+  beforeAll(() => {
+    require('../../lib/hooks/Hook.es6.js');
+    const Hook = foam.lookup('tools.web.strict.Hook');
+    const ProxyX = foam.createSubContext({Proxy});
+
+    let count = 0;
+    const doInstallHook = (opts, X) => {
+      opts.id = opts.id || `anonymousHook${count++}`;
+      const hook = Hook.create(opts, X);
+      hook.install();
+      return hook;
+    };
+
+    installHook = opts => doInstallHook(opts, ProxyX);
+  });
+
   let f1, f2;
   let impl1, impl2;
   let g1, g2;

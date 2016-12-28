@@ -16,37 +16,37 @@
  */
 'use strict';
 
-let Controller;
-beforeAll(() => {
-  require('../../lib/Controller.es6.js');
-  require('../../lib/advisors/Advisor.es6.js');
-  require('../../lib/triggers/SyncXHRTrigger.es6.js');
-
-  Controller = foam.lookup('tools.web.strict.Controller');
-
-  foam.CLASS({
-    package: 'tools.web.strict.test',
-    name: 'CallbackAdvisor',
-    extends: 'tools.web.strict.Advisor',
-
-    properties: [
-      {
-        name: 'callback',
-        value: function() {
-          throw new Error('CallbackAdvisor with no callback');
-        },
-      },
-    ],
-
-    listeners: [
-      function onAdvice(sub, topic, ...args) {
-        return this.callback(...args);
-      },
-    ],
-  });
-});
-
 describe('SyncXHR', () => {
+  let Controller;
+  beforeAll(() => {
+    require('../../lib/Controller.es6.js');
+    require('../../lib/advisors/Advisor.es6.js');
+    require('../../lib/triggers/SyncXHRTrigger.es6.js');
+
+    Controller = foam.lookup('tools.web.strict.Controller');
+
+    foam.CLASS({
+      package: 'tools.web.strict.test',
+      name: 'CallbackAdvisor',
+      extends: 'tools.web.strict.Advisor',
+
+      properties: [
+        {
+          name: 'callback',
+          value: function() {
+            throw new Error('CallbackAdvisor with no callback');
+          },
+        },
+      ],
+
+      listeners: [
+        function onAdvice(sub, topic, ...args) {
+          return this.callback(...args);
+        },
+      ],
+    });
+  });
+
   const withCallbackController = function(callback, f) {
     const controller = Controller.create({
       hooks: {
