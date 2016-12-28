@@ -16,11 +16,44 @@
  */
 'use strict';
 
-// TODO(markdittmer): We need a better solution for running code in NodeJS.
+// Stub out known web APIs.
+
+// TODO(markdittmer): Setup a proper dependency.
+const data = require('../../node_modules/web-apis-investigator/data/idl/blink/linked/processed.json');
+const v = {};
+const f = function() {
+  return v;
+};
+
+function defineProperty(ifName, memName, desc) {
+  let impl = global;
+  if (!impl[ifName]) impl[ifName] = function() {};
+  impl = impl[ifName];
+  if (!impl.prototype) impl.prototype = {};
+  impl = impl.prototype;
+
+  Object.defineProperty(impl, memName, desc);
+  if (ifName === 'Window')
+    Object.defineProperty(global, memName, desc);
+}
 
 beforeAll(() => {
-  global.XMLHttpRequest = function() {};
-  global.XMLHttpRequest.prototype = {
-    open: function() {},
-  };
+  for (const iface of data) {
+    if (!iface.members) continue;
+
+    for (const member of iface.members) {
+      if (!member.name) continue;
+
+      let desc = {configurable: true};
+      if (member.type_ === 'Attribute') {
+        desc.get = () => v;
+        if (!member.isReadOnly)
+          desc.set = () => v;
+
+      } else {
+        desc.value = f;
+      }
+      defineProperty(iface.name, member.name, desc);
+    }
+  }
 });
