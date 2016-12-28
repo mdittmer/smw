@@ -22,11 +22,11 @@ beforeAll(() => {
 });
 
 describe('hooks', () => {
-  it('Class, id, impl, and name', () => {
+  it('Class, id, implProvider, and name', () => {
     foam.Object.forEach(hooks, value => {
       expect(typeof value.class).toBe('string');
       expect(value.id).toBeDefined();
-      expect(value.impl).toBeDefined();
+      expect(value.implProvider).toBeDefined();
       expect(typeof value.name).toBe('string');
     });
   });

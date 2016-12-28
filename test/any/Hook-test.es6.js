@@ -127,9 +127,9 @@ describe('Hook', () => {
       },
     });
     expect(impl.p).toBe(0); // Non-intrusive wrapped get.
-    expect(impl.p = -1).toBe(-1); // Non-intrusive wrapped set.
+    expect(impl.p = -1).toBe(-1); // Non-intrusive wrapped get-then-set.
     expect(impl.p).toBe(-1); // Non-intrusive wrapped get (again).
-    expect(gets).toBe(2);
+    expect(gets).toBe(3);
     expect(sets).toBe(1);
   });
 
@@ -175,7 +175,7 @@ describe('Hook', () => {
       },
     });
     expect(impl.f(2)).toBe(f(2)); // Non-intrusive wrapped apply.
-    impl.f = f2; // Non-intrusive wrapped set.
+    impl.f = f2; // Non-intrusive wrapped get-then-set.
     expect(impl.f(3)).toBe(f2(3)); // Non-intrusive wrapped apply.
     expect(sets).toBe(1);
     expect(applies).toBe(2);
@@ -206,9 +206,9 @@ describe('Hook', () => {
     });
     expect(impl.f(2)).toBe(f(2)); // Non-intrusive wrapped get-then-apply.
     impl.f; // Non-intrusive wrapped get.
-    impl.f = f2;  // Non-intrusive wrapped set.
+    impl.f = f2;  // Non-intrusive wrapped get-then-set.
     expect(impl.f(3)).toBe(f2(3)); // Non-intrusive wrapped get-then-apply.
-    expect(gets).toBe(3);
+    expect(gets).toBe(4);
     expect(sets).toBe(1);
     expect(applies).toBe(2);
   });
@@ -278,8 +278,8 @@ describe('Hook', () => {
       set: (old, nu) => sets++,
     });
     expect(impl.p).toBe(0); // Before gets increment.
-    impl.p = 1;
-    expect(gets).toBe(1);
+    impl.p = 1; // Get-then-set.
+    expect(gets).toBe(2);
     expect(sets).toBe(1);
     expect(pValue).toBe(0);
     hook.uninstall();

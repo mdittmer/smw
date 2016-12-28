@@ -19,6 +19,9 @@
 let PubHookTopic;
 let installPubHook;
 beforeAll(() => {
+  // TODO(markdittmer): Implement a "multiIt" that tests implProviders of
+  // different types ("global.prop.lookup", () => impl, and impl).
+
   const X = foam.createSubContext({Proxy});
   require('../../lib/hooks/PubHook.es6.js');
   PubHookTopic = foam.lookup('tools.web.strict.PubHookTopic');
@@ -35,6 +38,8 @@ beforeAll(() => {
   installPubHook = opts => doInstallPubHook(opts);
 });
 
+const wrapImpl = impl => () => impl;
+
 describe('PubHook', () => {
   it('Provide class', () => {
     expect(foam.lookup('tools.web.strict.PubHook')).toBeDefined();
@@ -43,7 +48,8 @@ describe('PubHook', () => {
   it('No publications with no get/set/apply set', () => {
     let value = 0;
     const impl = {f: () => true};
-    const hook = installPubHook({impl, name: 'f'});
+    const implProvider = wrapImpl(impl);
+    const hook = installPubHook({implProvider, name: 'f'});
     hook.sub(PubHookTopic.GET, () => value++);
     hook.sub(PubHookTopic.SET, () => value++);
     hook.sub(PubHookTopic.APPLY, () => value++);
@@ -56,7 +62,8 @@ describe('PubHook', () => {
   it('Get publishes', () => {
     let value = 0;
     const impl = {f: () => true};
-    const hook = installPubHook({impl, name: 'f', get: true});
+    const implProvider = wrapImpl(impl);
+    const hook = installPubHook({implProvider, name: 'f', get: true});
     hook.sub(PubHookTopic.GET, () => value++);
     impl.f;
     impl.f;
@@ -66,7 +73,8 @@ describe('PubHook', () => {
   it('Set publishes', () => {
     let value = 0;
     const impl = {f: () => true};
-    const hook = installPubHook({impl, name: 'f', set: true});
+    const implProvider = wrapImpl(impl);
+    const hook = installPubHook({implProvider, name: 'f', set: true});
     hook.sub(PubHookTopic.SET, () => value++);
     impl.f = () => false;
     impl.f = () => null;
@@ -76,7 +84,8 @@ describe('PubHook', () => {
   it('Apply publishes', () => {
     let value = 0;
     const impl = {f: () => true};
-    const hook = installPubHook({impl, name: 'f', apply: true});
+    const implProvider = wrapImpl(impl);
+    const hook = installPubHook({implProvider, name: 'f', apply: true});
     hook.sub(PubHookTopic.APPLY, () => value++);
     impl.f();
     impl.f();
@@ -87,12 +96,17 @@ describe('PubHook', () => {
     let gets = 0;
     let sets = 0;
     const impl = {f: () => true};
-    const hook = installPubHook({impl, name: 'f', get: true, set: true});
+    const hook = installPubHook({
+      implProvider: wrapImpl(impl),
+      name: 'f',
+      get: true,
+      set: true,
+    });
     hook.sub(PubHookTopic.GET, () => gets++);
     hook.sub(PubHookTopic.SET, () => sets++);
     impl.f;
-    impl.f = () => false;
-    expect(gets).toBe(1);
+    impl.f = () => false; // Get-then-set.
+    expect(gets).toBe(2);
     expect(sets).toBe(1);
   });
 
@@ -100,7 +114,12 @@ describe('PubHook', () => {
     let gets = 0;
     let applies = 0;
     const impl = {f: () => true};
-    const hook = installPubHook({impl, name: 'f', get: true, apply: true});
+    const hook = installPubHook({
+      implProvider: wrapImpl(impl),
+      name: 'f',
+      get: true,
+      apply: true,
+    });
     hook.sub(PubHookTopic.GET, () => gets++);
     hook.sub(PubHookTopic.APPLY, () => applies++);
     impl.f; // Get.
@@ -113,7 +132,12 @@ describe('PubHook', () => {
     let sets = 0;
     let applies = 0;
     const impl = {f: () => true};
-    const hook = installPubHook({impl, name: 'f', set: true, apply: true});
+    const hook = installPubHook({
+      implProvider: wrapImpl(impl),
+      name: 'f',
+      set: true,
+      apply: true,
+    });
     hook.sub(PubHookTopic.SET, () => sets++);
     hook.sub(PubHookTopic.APPLY, () => applies++);
     impl.f = () => false; // Set.
@@ -128,7 +152,7 @@ describe('PubHook', () => {
     let applies = 0;
     const impl = {f: () => true};
     const hook = installPubHook({
-      impl,
+      implProvider: wrapImpl(impl),
       name: 'f',
       get: true,
       set: true,
@@ -138,9 +162,9 @@ describe('PubHook', () => {
     hook.sub(PubHookTopic.SET, () => sets++);
     hook.sub(PubHookTopic.APPLY, () => applies++);
     impl.f; // Get.
-    impl.f = () => false; // Set.
+    impl.f = () => false; // Get-then-set.
     impl.f(); // Get-then-apply.
-    expect(gets).toBe(2);
+    expect(gets).toBe(3);
     expect(sets).toBe(1);
     expect(applies).toBe(1);
   });
