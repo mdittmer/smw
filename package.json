@@ -24,7 +24,8 @@
   "author": "Mark Dittmer",
   "license": "Apache-2.0",
   "dependencies": {
-    "foam2-experimental": "git://github.com/foam-framework/foam2-experimental.git#consumable"
+    "foam2-experimental": "git://github.com/foam-framework/foam2-experimental.git#consumable",
+    "web-apis-investigator": "git://github.com/mdittmer/web-apis.git"
   },
   "devDependencies": {
     "babel-core": "^6.18.2",
@@ -38,6 +39,7 @@
     "glob": "^7.1.1",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.2",
+    "json-loader": "^0.5.4",
     "lodash": "^4.17.2",
     "webpack": "^1.13.3"
   },
