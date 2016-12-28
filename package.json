@@ -7,12 +7,17 @@
   },
   "scripts": {
     "build": "webpack --config ./config/webpack.dev.config.es6.js",
-    "coverage": "JASMINE_CONFIG_PATH=./config/jasmine_coverage.json istanbul cover --dir .coverage -- jasmine",
+    "coverage": "karma start ./config/karma.coverage.conf.js",
+    "coverage_node": "JASMINE_CONFIG_PATH=./config/jasmine_coverage.json istanbul cover --dir .coverage -- jasmine",
     "develop": "webpack --watch --progress --config ./config/webpack.dev.config.es6.js",
-    "integration": "JASMINE_CONFIG_PATH=./config/jasmine_integration.json jasmine",
+    "develop_test": "karma start ./config/karma.dev.conf.js",
+    "integration": "karma start ./config/karma.integration.conf.js",
+    "integration_node": "JASMINE_CONFIG_PATH=./config/jasmine_integration.json jasmine",
     "lint": "webpack --config ./config/webpack.strict.config.es6.js",
-    "test": "JASMINE_CONFIG_PATH=./config/jasmine_all.json jasmine",
-    "unit": "JASMINE_CONFIG_PATH=./config/jasmine_unit.json jasmine"
+    "test": "karma start ./config/karma.all.conf.js",
+    "test_node": "JASMINE_CONFIG_PATH=./config/jasmine_all.json jasmine",
+    "unit": "karma start ./config/karma.unit.conf.js",
+    "unit_node": "JASMINE_CONFIG_PATH=./config/jasmine_unit.json jasmine"
   },
   "keywords": [
     "javascript",
@@ -38,8 +43,15 @@
     "eslint-loader": "^1.6.1",
     "glob": "^7.1.1",
     "istanbul": "^0.4.5",
+    "istanbul-instrumenter-loader": "^1.2.0",
     "jasmine": "^2.5.2",
+    "jasmine-core": "^2.5.2",
     "json-loader": "^0.5.4",
+    "karma": "^1.3.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-webpack": "^1.8.1",
     "lodash": "^4.17.2",
     "webpack": "^1.13.3"
   },
